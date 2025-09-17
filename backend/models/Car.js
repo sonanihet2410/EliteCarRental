@@ -13,6 +13,8 @@ const carSchema = new mongoose.Schema(
     transmission: { type: String },
     location: { type: String },
     description: { type: String },
+    availableFrom: { type: Date },
+    availableTo: { type: Date },
     owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // optional
   },
   { timestamps: true }

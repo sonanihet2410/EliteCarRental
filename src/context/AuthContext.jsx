@@ -1,51 +1,98 @@
-// src/context/AuthContext.jsx
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { apiFetch } from "../lib/api";
+// src/context/AuthContext.js
+import React, { createContext, useContext, useState, useEffect } from "react";
 
-const AuthContext = createContext(null);
+const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
-  const [token, setToken] = useState(() => localStorage.getItem("token"));
-  const [user, setUser] = useState(() => {
-    const raw = localStorage.getItem("user");
-    return raw ? JSON.parse(raw) : null;
-  });
+export const useAuth = () => useContext(AuthContext);
 
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+
+  // Check for existing auth on app start
   useEffect(() => {
-    if (token) localStorage.setItem("token", token);
-    else localStorage.removeItem("token");
-  }, [token]);
+    const storedToken = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
+    
+    if (storedToken && storedUser) {
+      try {
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      } catch (err) {
+        // Clear invalid data
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        setUser(null);
+        setToken(null);
+      }
+    }
+  }, []);
 
-  useEffect(() => {
-    if (user) localStorage.setItem("user", JSON.stringify(user));
-    else localStorage.removeItem("user");
-  }, [user]);
+  // BASE API URL (adjust if backend runs elsewhere)
+  const API_URL = "http://localhost:5000/api/auth";
 
-  // login: call server and set token only on success
-  const login = async (email, password) => {
-    const data = await apiFetch("/api/auth/login", { method: "POST", body: { email, password } });
-    if (!data || !data.token) throw new Error("Invalid login response");
-    setToken(data.token);
-    setUser(data.user || null);
-    return data;
+  const signup = async (name, email, password) => {
+    try {
+      const res = await fetch(`${API_URL}/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.message || "Signup failed");
+      }
+
+      const data = await res.json();
+      setUser(data.user);
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        setToken(data.token);
+      }
+      localStorage.setItem("user", JSON.stringify(data.user));
+      return data;
+    } catch (err) {
+      throw err;
+    }
   };
 
-  // signup: register then auto-login
-  const signup = async (name, email, password) => {
-    await apiFetch("/api/auth/signup", { method: "POST", body: { name, email, password } });
-    // if signup successful, auto-login
-    return login(email, password);
+  const login = async (email, password) => {
+    try {
+      const res = await fetch(`${API_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.message || "Login failed");
+      }
+
+      const data = await res.json();
+      setUser(data.user);
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        setToken(data.token);
+      }
+      localStorage.setItem("user", JSON.stringify(data.user));
+      return data;
+    } catch (err) {
+      throw err;
+    }
   };
 
   const logout = () => {
-    setToken(null);
     setUser(null);
+    localStorage.removeItem("token");
+    setToken(null);
+    localStorage.removeItem("user");
   };
 
-  const value = useMemo(() => ({ token, user, login, signup, logout }), [token, user]);
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth() {
-  return useContext(AuthContext);
-}
+  return (
+    <AuthContext.Provider value={{ user, token, signup, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};

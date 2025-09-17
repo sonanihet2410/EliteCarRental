@@ -5,12 +5,12 @@ import { assets } from "../assets/assets";
 
 const CarCard = ({ car }) => {
   return (
-    <Link to={`/car/${car.id}`} className="block">
+    <Link to={`/car/${car._id}`} className="block">
       <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition">
         {/* Image */}
         <div className="relative">
           <img
-            src={car.image}
+            src={car.image?.startsWith('/uploads/') ? `http://localhost:5000${car.image}` : car.image}
             alt={car.name}
             className="w-full h-48 object-cover"
           />
