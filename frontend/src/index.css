@@ -1,0 +1,85 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import "tailwindcss";
+
+*{
+  font-family: "Inter", sans-serif;
+}
+
+@theme {
+  --color-primary: #2563EB;
+  --color-primary-dull: #1F58D8;
+  --color-light: #F1F5F9;
+  --color-borderColor: #c4c7d2; 
+}
+
+/* Custom styles for dashboard */
+.dashboard-sidebar {
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+}
+
+.dashboard-main {
+  background: #ffffff;
+}
+
+.nav-item-active {
+  background-color: #eff6ff;
+  color: #2563eb;
+  border-right: 2px solid #2563eb;
+}
+
+.nav-item-inactive {
+  color: #6b7280;
+}
+
+.nav-item-inactive:hover {
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+/* Form styles */
+.form-input {
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  transition: all 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Table styles */
+.table-header {
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table-row:hover {
+  background-color: #f9fafb;
+}
+
+/* Card styles */
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+/* Button styles */
+.btn-primary {
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8;
+}
