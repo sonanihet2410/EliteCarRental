@@ -70,17 +70,17 @@ EliteCarRental/
 
 ## 📸 Screenshots
 
+### Login Page
+![Login Page](Login.png)
+
 ### Home Page
 ![Home Page](home.png)
 
 ### Availble Car
-![Vehicle Listing](Availble_car.png)
+![Vehicle Listing](Available_car.png)
 
 ### My Booking
 ![Vehicle Listing](My_booking.png)
-
-### Login Page
-![Login Page](Login.png)
 
 ### Admin Dashboard
 ![Admin Dashboard](Admin.png)
